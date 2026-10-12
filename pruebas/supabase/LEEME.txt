@@ -1,0 +1,6 @@
+Prueba del esquema en un PostgreSQL real (sin necesidad de una cuenta de Supabase):
+  1) createdb vy
+  2) psql -d vy -f simulacion_supabase.sql      (simula auth, storage y los roles de Supabase)
+  3) psql -d vy -f ../../supabase/schema.sql    (el esquema; se puede repetir)
+  4) psql -d vy -f prueba_permisos.sql          (cuentas, roles, permisos, auditoría con equipo e IP, cambio de clave)
+Cada bloque imprime lo que pasó; los "ERROR" de los pasos 3-7 son intentos que DEBEN ser rechazados.

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ViaticoYa — viáticos de vendedores</title>
+<meta name="description" content="Registro de gastos de viaje de vendedores en Colombia: con foto, voz, ubicación y sin internet. Reporte inmediato y exportación a Excel para contabilidad.">
+<meta name="theme-color" content="#161a1d">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self' https://*.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="iconos/icono-192.png" type="image/png">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ViaticoYa">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<!-- ========== FALTA CONFIGURAR ========== -->
+<section id="vista-config" class="login" hidden>
+  <div class="login-caja">
+    <div class="marca marca-grande"><span class="marca-señal" aria-hidden="true">V</span><span class="marca-texto">Viático<b>Ya</b></span></div>
+    <h1>Falta conectar la base de datos</h1>
+    <p class="suave">ViaticoYa guarda los gastos, las cuentas y las fotos en Supabase. Aún no está conectada.</p>
+    <ol class="pasos">
+      <li>Crea un proyecto gratis en <b>supabase.com</b>.</li>
+      <li>Ejecuta el archivo <code>supabase/schema.sql</code> en el SQL Editor.</li>
+      <li>Pega la <b>Project URL</b> y la clave <b>anon public</b> en <code>js/config.js</code> y sube el archivo a GitHub.</li>
+    </ol>
+    <p class="ayuda">Todo el paso a paso está en el <b>INSTRUCTIVO-SUPABASE</b> que viene con la app.</p>
+  </div>
+</section>
+
+<!-- ========== INICIO DE SESIÓN ========== -->
+<section id="vista-login" class="login" hidden>
+  <div class="login-contenido">
+    <div class="login-hero">
+      <div class="marca marca-grande"><span class="marca-señal" aria-hidden="true">V</span><span class="marca-texto">Viático<b>Ya</b></span></div>
+      <h1>Tus viáticos, al día y sin papeles.</h1>
+      <ul class="beneficios">
+        <li><span aria-hidden="true">📸</span> Foto del recibo desde el celular</li>
+        <li><span aria-hidden="true">📍</span> Ubicación automática en cada gasto</li>
+        <li><span aria-hidden="true">📶</span> Funciona sin internet y envía al reconectar</li>
+        <li><span aria-hidden="true">📊</span> Contabilidad lo ve al instante y lo exporta a Excel</li>
+      </ul>
+    </div>
+
+    <div class="login-caja">
+      <div id="login-formularios">
+        <div class="tabs" role="tablist" aria-label="Acceso">
+          <button class="pestana" type="button" role="tab" id="tab-entrar" aria-selected="true" aria-controls="form-login">Ingresar</button>
+          <button class="pestana" type="button" role="tab" id="tab-crear" aria-selected="false" aria-controls="form-registro">Crear cuenta</button>
+        </div>
+
+        <form id="form-login" role="tabpanel" aria-labelledby="tab-entrar" novalidate autocomplete="on">
+          <label for="login-correo">Correo</label>
+          <input id="login-correo" name="correo" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+          <label for="login-clave">Contraseña</label>
+          <input id="login-clave" name="clave" type="password" autocomplete="current-password" required>
+          <p id="login-error" class="error" role="alert" hidden></p>
+          <button class="boton principal ancho" type="submit" id="login-enviar">Ingresar</button>
+        </form>
+
+        <form id="form-registro" role="tabpanel" aria-labelledby="tab-crear" novalidate autocomplete="on" hidden>
+          <label for="reg-nombre">Nombre completo</label>
+          <input id="reg-nombre" type="text" autocomplete="name" required>
+          <label for="reg-correo">Correo</label>
+          <input id="reg-correo" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+          <div class="rejilla angosto">
+            <div><label for="reg-cedula">Cédula</label><input id="reg-cedula" type="text" inputmode="numeric" autocomplete="off" required></div>
+            <div><label for="reg-ciudad">Ciudad base</label><input id="reg-ciudad" type="text" list="lista-ciudades-reg" autocomplete="off"></div>
+          </div>
+          <datalist id="lista-ciudades-reg"></datalist>
+          <label for="reg-clave">Contraseña (mínimo 6)</label>
+          <input id="reg-clave" type="password" autocomplete="new-password" required>
+          <label for="reg-clave2">Repite la contraseña</label>
+          <input id="reg-clave2" type="password" autocomplete="new-password" required>
+          <label class="casilla"><input id="reg-acepto" type="checkbox"> <span>Autorizo el tratamiento de mis datos personales, incluida mi ubicación al registrar gastos, para el control de viáticos (Ley 1581 de 2012).</span></label>
+          <p id="reg-msg" class="error" role="alert" hidden></p>
+          <button class="boton principal ancho" type="submit" id="reg-enviar">Crear cuenta</button>
+          <p class="ayuda">Tu cuenta nace como vendedor. El administrador la aprueba y puede asignarte otro rol.</p>
+        </form>
+      </div>
+
+      <div id="login-espera" class="espera" role="status" hidden>
+        <div class="espera-ico" aria-hidden="true">✔</div>
+        <h2>Cuenta creada</h2>
+        <p id="espera-texto">El administrador debe aprobarla antes de que puedas ingresar. Cuando lo haga, entra con tu correo y tu contraseña.</p>
+        <button class="boton principal ancho" type="button" id="espera-volver">Volver a ingresar</button>
+      </div>
+
+      <div class="instalar-caja" id="login-instalar" hidden>
+        <button class="boton ancho" type="button" id="btn-instalar">📲 Instalar la app en mi celular</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== APLICACIÓN ========== -->
+<div id="vista-app" hidden>
+  <header class="barra">
+    <div class="marca"><span class="marca-señal" aria-hidden="true">V</span><span class="marca-texto">Viático<b>Ya</b></span></div>
+    <div class="barra-der">
+      <span id="chip-red" class="chip" role="status"></span>
+      <button id="btn-refrescar" class="icono-btn" type="button" aria-label="Actualizar"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z" fill="currentColor"/></svg></button>
+      <button id="btn-campana" class="icono-btn" type="button" aria-label="Notificaciones">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.3 16A1 1 0 0 0 5.2 17.5h13.6a1 1 0 0 0 .9-1.5L18 12.600V9a6 6 0 0 0-6-6Zm-2 16a2 2 0 0 0 4 0Z" fill="currentColor"/></svg>
+        <span id="campana-n" class="insignia" hidden>0</span>
+      </button>
+      <button id="btn-perfil" class="avatar" type="button" aria-label="Mi cuenta" aria-haspopup="dialog"></button>
+    </div>
+  </header>
+
+  <main id="contenido" tabindex="-1"></main>
+
+  <nav id="nav" class="nav" aria-label="Secciones"></nav>
+</div>
+
+<!-- ========== DIÁLOGOS ========== -->
+<dialog id="dlg-detalle" aria-labelledby="detalle-titulo">
+  <div class="dlg-cab"><h2 id="detalle-titulo">Gasto</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div id="detalle-cuerpo" class="dlg-cuerpo"></div>
+  <div id="detalle-acciones" class="dlg-pie"></div>
+</dialog>
+
+<dialog id="dlg-rechazo" aria-labelledby="rechazo-titulo">
+  <form method="dialog" id="form-rechazo" novalidate>
+    <div class="dlg-cab"><h2 id="rechazo-titulo">Rechazar gasto</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+    <div class="dlg-cuerpo">
+      <p class="suave">El vendedor verá este motivo y podrá corregir y reenviar.</p>
+      <label for="rechazo-motivo">Motivo</label>
+      <textarea id="rechazo-motivo" rows="3" maxlength="200" required></textarea>
+      <p id="rechazo-error" class="error" role="alert" hidden></p>
+    </div>
+    <div class="dlg-pie"><button class="boton" type="button" data-cerrar>Cancelar</button><button class="boton peligro" type="submit">Rechazar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-confirmar" aria-labelledby="confirmar-titulo">
+  <div class="dlg-cab"><h2 id="confirmar-titulo">Confirmar</h2></div>
+  <div class="dlg-cuerpo"><p id="confirmar-texto"></p></div>
+  <div class="dlg-pie"><button class="boton" type="button" id="confirmar-no">Cancelar</button><button class="boton principal" type="button" id="confirmar-si">Continuar</button></div>
+</dialog>
+
+<dialog id="dlg-notif" aria-labelledby="notif-titulo">
+  <div class="dlg-cab"><h2 id="notif-titulo">Notificaciones</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div id="notif-lista" class="dlg-cuerpo"></div>
+</dialog>
+
+<dialog id="dlg-perfil" aria-labelledby="perfil-titulo">
+  <div class="dlg-cab"><h2 id="perfil-titulo">Mi cuenta</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div id="perfil-cuerpo" class="dlg-cuerpo"></div>
+  <div class="dlg-pie"><button class="boton peligro" type="button" id="btn-salir">Cerrar sesión</button></div>
+</dialog>
+
+<dialog id="dlg-form-admin" aria-labelledby="admin-titulo">
+  <form method="dialog" id="form-admin" novalidate>
+    <div class="dlg-cab"><h2 id="admin-titulo">Editar</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+    <div id="admin-campos" class="dlg-cuerpo"></div>
+    <div class="dlg-pie"><button class="boton" type="button" data-cerrar>Cancelar</button><button class="boton principal" type="submit">Guardar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-instalar" aria-labelledby="instalar-titulo">
+  <div class="dlg-cab"><h2 id="instalar-titulo">Instalar ViaticoYa</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div id="instalar-cuerpo" class="dlg-cuerpo"></div>
+  <div class="dlg-pie"><button class="boton principal" type="button" data-cerrar>Entendido</button></div>
+</dialog>
+
+<dialog id="dlg-clave" aria-labelledby="clave-titulo">
+  <form method="dialog" id="form-clave" novalidate>
+    <div class="dlg-cab"><h2 id="clave-titulo">Cambiar contraseña</h2><button class="icono-btn" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+    <div id="clave-campos" class="dlg-cuerpo"></div>
+    <div class="dlg-pie"><button class="boton" type="button" data-cerrar>Cancelar</button><button class="boton principal" type="submit">Guardar contraseña</button></div>
+  </form>
+</dialog>
+
+<div id="avisos" class="avisos" aria-live="polite" aria-atomic="false"></div>
+
+<noscript><p style="padding:24px">ViaticoYa necesita JavaScript para funcionar.</p></noscript>
+
+<script src="js/config.js"></script>
+<script src="js/logica.js"></script>
+<script src="js/xlsx.js"></script>
+<script src="js/almacen.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/datos.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

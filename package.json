@@ -1,0 +1,7 @@
+{
+  "name": "viaticoya",
+  "private": true,
+  "description": "ViaticoYa: control de viáticos de vendedores (PWA). Solo las pruebas usan paquetes de npm.",
+  "scripts": { "test": "node pruebas/logica.test.js && node pruebas/xlsx.test.js && node pruebas/datos.test.js" },
+  "devDependencies": { "fake-indexeddb": "^6.0.0" }
+}
