@@ -8,7 +8,7 @@
  * 3. Sube este archivo a GitHub.
  */
 const CONFIG = {
-  supabaseUrl: "",        // ej: "https://abcdefghijkl.supabase.co"
-  supabaseAnonKey: "",    // ej: "eyJhbGciOi..."  (la larga que dice "anon public")
-  refrescoMs: 15000       // cada cuántos ms se actualizan los datos mientras la app está abierta
+    supabaseUrl: "https://qmplotcpmpkhypxhimjg.supabase.co",
+    supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcGxvdGNwbXBraHlweGhpbWpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NTk3NDcsImV4cCI6MjEwNzMzNTc0N30.AyOv5HRuH4vumMsGnfHq-ZIdoVDTuqV-t2AXgZISgN4",
+    refrescoMs: 15000
 };
